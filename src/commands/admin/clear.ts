@@ -13,7 +13,7 @@ export const Clear: CommandInt = {
         if (!message.member?.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES))
             return channel.send("The user does not have permission to delete messages.");
         if (isNaN(amount) || !amount) return channel.send("Please input a valid number");
-        if (amount >= 100)
+        if (amount > 100)
             return channel.send({
                 embeds: [
                     new MessageEmbed()
@@ -27,17 +27,26 @@ export const Clear: CommandInt = {
 
         // deletes the command message then bulk delete.
         await message.delete();
-        await channel.bulkDelete(amount).then(async (msg) => {
-            return channel.send({
-                embeds: [
-                    new MessageEmbed()
-                        .setTitle("Messages were deleted from the text channel.")
-                        .setDescription(
-                            `**${amount} messages** deleted by **${message.author.tag}**`
-                        )
-                        .setColor("GREEN"),
-                ],
-            });
+        let amount_deleted: number = 0;
+        await channel.bulkDelete(amount, true).then(async (message) => {
+            amount_deleted = message.size;
+        });
+
+        let return_embed = new MessageEmbed()
+            .setTitle("Messages were deleted from the text channel.")
+            .setDescription(
+                `**${amount_deleted} messages** deleted by **${message.author.tag}**`
+            )
+            .setColor("GREEN");
+
+        if (amount_deleted != amount) {
+            return_embed.setFooter(
+                "Note: messages older than 14 days can't be deleted by the bot."
+            );
+        }
+
+        return channel.send({
+            embeds: [return_embed],
         });
     },
 };
