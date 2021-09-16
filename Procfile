@@ -1,0 +1,1 @@
+worker: tsc && node -r dotenv/config ./prod/index.js
