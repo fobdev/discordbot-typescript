@@ -1,10 +1,10 @@
 import { MessageEmbed, Permissions } from "discord.js";
-import { CommandInt } from "../../interfaces/CommandInt";
+import { Command } from "../../interfaces/Command";
 
-export const RenameServer: CommandInt = {
-    name: "renameserver",
+export const RenameServer: Command = {
+    name: ["renameserver"],
     description: "Renames the server (admin).",
-    run: async (client, message) => {
+    run: async (prefix, client, message) => {
         let { content, member, author, guild, channel } = message;
         if (!member?.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
             return channel.send({

@@ -1,10 +1,10 @@
 import { MessageEmbed, Permissions } from "discord.js";
-import { CommandInt } from "../../interfaces/CommandInt";
+import { Command } from "../../interfaces/Command";
 
-export const Clear: CommandInt = {
-    name: "clear",
+export const Clear: Command = {
+    name: ["clear"],
     description: "Clear a specific amount of messages from the channel",
-    run: async (client, message) => {
+    run: async (prefix, client, message) => {
         let { channel, content } = message;
         const amount: number = parseInt(content.split(" ").slice(1).toString());
 
@@ -34,9 +34,7 @@ export const Clear: CommandInt = {
 
         let return_embed = new MessageEmbed()
             .setTitle("Messages were deleted from the text channel.")
-            .setDescription(
-                `**${amount_deleted} messages** deleted by **${message.author.tag}**`
-            )
+            .setDescription(`**${amount_deleted} messages** deleted by **${message.author.tag}**`)
             .setColor("GREEN");
 
         if (amount_deleted != amount) {

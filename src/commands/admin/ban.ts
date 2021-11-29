@@ -1,10 +1,10 @@
-import { CommandInt } from "../../interfaces/CommandInt";
+import { Command } from "../../interfaces/Command";
 import { MessageEmbed } from "discord.js";
 
-export const Ban: CommandInt = {
-    name: "ban",
+export const Ban: Command = {
+    name: ["ban"],
     description: "Bans a user from the server",
-    run: async (client, message) => {
+    run: async (prefix, client, message) => {
         let { content, channel, author, member, mentions } = message;
 
         if (!member?.permissions.has("BAN_MEMBERS")) {

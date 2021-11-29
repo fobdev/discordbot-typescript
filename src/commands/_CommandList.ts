@@ -1,20 +1,22 @@
-import { CommandInt } from "../interfaces/CommandInt";
-import { HelloWorld } from "./admin/helloworld";
-import { Ping } from "./bot/ping";
-import { Help } from "./bot/help";
-import { Clear } from "./admin/clear";
-import { Kick } from "./admin/kick";
-import { RenameServer } from "./admin/renameserver";
-import { Ban } from "./admin/ban";
-import { Music } from "./music/music";
+import { Command } from "../interfaces";
+import { forEach } from "lodash";
 
-export const CommandList: CommandInt[] = [
-    HelloWorld,
-    Ping,
-    Help,
-    Clear,
-    Kick,
-    RenameServer,
-    Ban,
-    Music,
-];
+import * as AdminCommands from "./admin";
+import * as BotCommands from "./bot";
+
+let getCollection = (collection: any) => {
+    let commandsArray: Array<Command> = [];
+
+    forEach(collection, (command) => {
+        commandsArray.push(command);
+    });
+
+    return commandsArray;
+};
+
+export const CommandList: Array<Command> = [];
+
+(async () => {
+    CommandList.push(...getCollection(AdminCommands));
+    CommandList.push(...getCollection(BotCommands));
+})();

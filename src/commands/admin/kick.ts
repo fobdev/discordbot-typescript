@@ -1,10 +1,10 @@
 import { MessageEmbed } from "discord.js";
-import { CommandInt } from "../../interfaces/CommandInt";
+import { Command } from "../../interfaces/Command";
 
-export const Kick: CommandInt = {
-    name: "kick",
+export const Kick: Command = {
+    name: ["kick"],
     description: "Kick a user from the server.",
-    run: async (client, message) => {
+    run: async (prefix, client, message) => {
         let { channel, author, member } = message;
         if (!member?.permissions.has("KICK_MEMBERS")) {
             return channel.send({
