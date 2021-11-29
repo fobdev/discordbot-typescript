@@ -5,7 +5,8 @@
     "main": "index.js",
     "scripts": {
         "build": "tsc",
-        "start": "node -r dotenv/config ./prod/index.js",
+        "dev": "ts-node-dev -r dotenv/config src/index.ts",
+        "start": "node prod/index.js",
         "postinstall": "npm run build"
     },
     "author": "Fobenga",
@@ -26,6 +27,8 @@
         "@types/lodash": "^4.14.177",
         "@types/node": "^16.7.11",
         "@types/pg": "^8.6.1",
-        "typescript": "^4.4.2"
+        "typescript": "^4.4.2",
+        "ts-node": "^10.4.0",
+        "ts-node-dev": "^1.1.8"
     }
 }
