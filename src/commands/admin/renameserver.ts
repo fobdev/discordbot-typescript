@@ -1,49 +1,44 @@
-import { MessageEmbed, Permissions } from "discord.js";
-import { Command } from "../../interfaces/Command";
+import { Permissions } from "discord.js";
+import { onError } from "../../events";
+import { Command } from "../../interfaces";
+import { Response } from "../../models";
 
 export const RenameServer: Command = {
-    name: ["renameserver"],
-    description: "Renames the server (admin).",
-    run: async (prefix, client, message) => {
-        let { content, member, author, guild, channel } = message;
+    name: ["renameserver", "rs"],
+    arguments: ["new name"],
+    description: "Renames the server (admin only).",
+    run: async (prefix, client, message, args) => {
+        let { member, author, guild, channel } = message;
         if (!member?.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
             return channel.send({
                 embeds: [
-                    new MessageEmbed()
-                        .setTitle("Permission denied.")
-                        .setDescription(
-                            "The user does not have permission to manage the server name."
-                        )
-                        .setColor("RED"),
+                    Response(
+                        "Permission denied.",
+                        "The user does not have permission to manage the server name.",
+                        "FAIL"
+                    ),
                 ],
             });
         }
 
-        let newname = content.split(" ").slice(1).join(" ");
+        let newname: string = "";
+        if (args?.length! > 0) newname = args!.join(" ");
+        else return channel.send("Please input a new name for the server.");
 
-        return guild
-            ?.setName(newname)
-            .then((updated) => {
-                channel.send({
-                    embeds: [
-                        new MessageEmbed()
-                            .setTitle("The server name has changed!")
-                            .setDescription(
-                                `**${author.tag}** changed the name of the server to **${newname}**`
-                            )
-                            .setColor("GREEN"),
-                    ],
-                });
-            })
-            .catch((err) => {
-                return channel.send({
-                    embeds: [
-                        new MessageEmbed()
-                            .setTitle("An error occured trying to change the name")
-                            .setDescription("Try using another name.")
-                            .setColor("RED"),
-                    ],
-                });
+        try {
+            await guild?.setName(newname);
+            return channel.send({
+                embeds: [
+                    Response(
+                        "The server name has changed!",
+                        `**${author.tag}** changed the name of the server to **${newname}**`,
+                        "SUCCESS"
+                    ),
+                ],
             });
+        } catch (e: any) {
+            console.error(`[RENAMESERVER] Error trying to rename the server: ${e.message}`);
+            return onError(message, e);
+        }
     },
 };
